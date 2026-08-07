@@ -26,6 +26,9 @@
       "output": "single",
       "favicon": "./assets/favicon.png"
     },
+    "experiments": {
+      "baseUrl": "/pantry"
+    },
     "plugins": [
       "expo-router",
       "expo-web-browser",
