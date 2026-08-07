@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { foodEmoji } from '@/domain/emoji';
 import { expiryLabel, expiryStatus } from '@/domain/expiry';
 import { PantryItem } from '@/domain/types';
-import { categoryEmoji, colors, radius, spacing, statusColor } from './theme';
+import { colors, radius, spacing, statusColor } from './theme';
 
 export function ExpiryBadge({ expiry }: { expiry: string }) {
   const status = expiryStatus(expiry);
@@ -62,7 +63,8 @@ export function ItemRow({
   return (
     <View style={styles.row}>
       <Pressable style={styles.rowMain} onPress={onPress} accessibilityRole="button">
-        <Text style={styles.emoji}>{categoryEmoji[item.category]}</Text>
+        {/* Items added before emoji were stored fall back to matching on the fly. */}
+        <Text style={styles.emoji}>{item.emoji ?? foodEmoji(item.name, item.category)}</Text>
         <View style={styles.rowText}>
           <Text style={styles.name} numberOfLines={1}>
             {item.name}

@@ -37,6 +37,8 @@ export type PantryItem = {
   category: Category;
   /** ISO date string, yyyy-mm-dd. */
   expiry: string;
+  /** Emoji picked from the name when the item was added. */
+  emoji?: string;
   addedAt: number;
   addedBy: string;
 };

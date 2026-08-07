@@ -1,4 +1,5 @@
 import { onValue, push, ref, remove, update } from 'firebase/database';
+import { foodEmoji } from '@/domain/emoji';
 import { daysUntil } from '@/domain/expiry';
 import { nameKey } from '@/domain/normalize';
 import { Category, PantryItem, Unit } from '@/domain/types';
@@ -41,6 +42,7 @@ export async function addItem(householdId: string, uid: string, item: NewItem): 
     ...item,
     name: item.name.trim(),
     nameKey: nameKey(item.name),
+    emoji: foodEmoji(item.name, item.category),
     addedAt: Date.now(),
     addedBy: uid,
   };
@@ -56,6 +58,7 @@ export async function updateItem(
   if (changes.name !== undefined) {
     patch.name = changes.name.trim();
     patch.nameKey = nameKey(changes.name);
+    patch.emoji = foodEmoji(changes.name, changes.category);
   }
   await update(ref(db(), `households/${householdId}/items/${itemId}`), patch);
 }
