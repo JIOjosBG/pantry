@@ -1,0 +1,50 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid && (auth.token.email === 'OWNER_EMAIL_HERE' || auth.token.email === 'FLATMATE_EMAIL_HERE')"
+      }
+    },
+
+    "householdCodes": {
+      ".read": false,
+      "$code": {
+        ".read": "auth != null && (auth.token.email === 'OWNER_EMAIL_HERE' || auth.token.email === 'FLATMATE_EMAIL_HERE')",
+        ".write": "auth != null && (auth.token.email === 'OWNER_EMAIL_HERE' || auth.token.email === 'FLATMATE_EMAIL_HERE') && (!data.exists() || !newData.exists())",
+        ".validate": "newData.isString()"
+      }
+    },
+
+    "households": {
+      "$hid": {
+        ".read": "auth != null && (auth.token.email === 'OWNER_EMAIL_HERE' || auth.token.email === 'FLATMATE_EMAIL_HERE') && data.child('members').child(auth.uid).exists()",
+        ".write": "auth != null && (auth.token.email === 'OWNER_EMAIL_HERE' || auth.token.email === 'FLATMATE_EMAIL_HERE') && (!data.exists() || data.child('members').child(auth.uid).exists() || newData.child('members').child(auth.uid).exists())",
+
+        "items": {
+          "$itemId": {
+            ".validate": "newData.hasChildren(['name', 'nameKey', 'qty', 'unit', 'category', 'expiry'])",
+            "qty": { ".validate": "newData.isNumber() && newData.val() > 0" },
+            "expiry": { ".validate": "newData.isString() && newData.val().matches(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)" }
+          }
+        },
+
+        "shopping": {
+          "$entryId": {
+            ".validate": "newData.hasChildren(['name', 'nameKey', 'qty', 'unit'])",
+            "qty": { ".validate": "newData.isNumber() && newData.val() > 0" }
+          }
+        },
+
+        "recipes": {
+          "$recipeId": {
+            ".validate": "newData.hasChildren(['title', 'ingredients'])"
+          }
+        }
+      }
+    }
+  }
+}
