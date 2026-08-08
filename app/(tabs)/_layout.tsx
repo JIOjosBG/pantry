@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { ColorValue, Text } from 'react-native';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useTheme } from '@/lib/theme';
 
 function icon(emoji: string) {
@@ -19,6 +20,7 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
         sceneStyle: { backgroundColor: colors.bg },
+        headerRight: () => <ThemeToggle />,
       }}
     >
       <Tabs.Screen

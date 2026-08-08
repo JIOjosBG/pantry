@@ -8,8 +8,6 @@ const STORAGE_KEY = 'pantry.theme';
 type ThemeContextValue = {
   theme: ThemeName;
   colors: Colors;
-  /** True once we know whether a theme was previously picked on this device. */
-  followsSystem: boolean;
   setTheme: (theme: ThemeName) => void;
   toggleTheme: () => void;
 };
@@ -45,11 +43,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     () => ({
       theme,
       colors: themes[theme],
-      followsSystem: picked === null,
       setTheme,
       toggleTheme: () => setTheme(theme === 'dark' ? 'light' : 'dark'),
     }),
-    [theme, picked, setTheme],
+    [theme, setTheme],
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
@@ -66,7 +63,6 @@ export function useTheme(): ThemeContextValue {
     context ?? {
       theme: systemTheme,
       colors: themes[systemTheme],
-      followsSystem: true,
       setTheme: () => {},
       toggleTheme: () => {},
     }

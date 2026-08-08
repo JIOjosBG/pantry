@@ -5,11 +5,10 @@ import { Button, Card, Screen } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { leaveHousehold, rotateInviteCode, subscribeMembers } from '@/lib/household';
 import { useHousehold } from '@/lib/store';
-import { useTheme, useThemedStyles } from '@/lib/theme';
+import { useThemedStyles } from '@/lib/theme';
 
 export default function SettingsScreen() {
   const styles = useThemedStyles(makeStyles);
-  const { theme, followsSystem, toggleTheme } = useTheme();
   const { user, signOut } = useAuth();
   const { householdId, inviteCode, items, recipes, shopping } = useHousehold();
   const [members, setMembers] = useState<{ uid: string; email: string; displayName: string }[]>([]);
@@ -57,20 +56,6 @@ export default function SettingsScreen() {
               </View>
             ))
           )}
-        </Card>
-
-        <Card style={styles.card}>
-          <Text style={styles.title}>Appearance</Text>
-          <Text style={styles.hint}>
-            {followsSystem
-              ? `Following your device — currently ${theme}.`
-              : `Using the ${theme} theme on this device.`}
-          </Text>
-          <Button
-            title={theme === 'dark' ? '☀️  Switch to light theme' : '🌙  Switch to dark theme'}
-            variant="secondary"
-            onPress={toggleTheme}
-          />
         </Card>
 
         <Card style={styles.card}>
