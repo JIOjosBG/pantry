@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
-import { colors, radius, spacing } from '@/components/theme';
+import { Colors, radius, spacing } from '@/components/theme';
 import { Button, Card, EmptyState, Field, Loading, Screen } from '@/components/ui';
 import { importedSpoonacularIds, saveRecipe } from '@/data/recipes';
 import {
@@ -11,8 +11,10 @@ import {
   searchRecipes,
 } from '@/data/spoonacular';
 import { useHousehold } from '@/lib/store';
+import { useThemedStyles } from '@/lib/theme';
 
 export default function DiscoverScreen() {
+  const styles = useThemedStyles(makeStyles);
   const { householdId, items, recipes } = useHousehold();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<DiscoverRecipe[]>([]);
@@ -155,24 +157,25 @@ export default function DiscoverScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  list: { padding: spacing.lg, maxWidth: 640, width: '100%', alignSelf: 'center' },
-  form: { gap: spacing.md, marginBottom: spacing.lg },
-  card: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    gap: spacing.md,
-  },
-  cardMain: { flexDirection: 'row', gap: spacing.md },
-  image: { width: 72, height: 72, borderRadius: radius.sm, backgroundColor: colors.bg },
-  imageFallback: { alignItems: 'center', justifyContent: 'center' },
-  imageFallbackText: { fontSize: 28 },
-  cardText: { flex: 1, gap: 2 },
-  title: { fontSize: 16, fontWeight: '600', color: colors.text },
-  meta: { fontSize: 13, color: colors.textMuted },
-  separator: { height: spacing.md },
-  error: { color: colors.danger, fontSize: 14 },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    list: { padding: spacing.lg, maxWidth: 640, width: '100%', alignSelf: 'center' },
+    form: { gap: spacing.md, marginBottom: spacing.lg },
+    card: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      gap: spacing.md,
+    },
+    cardMain: { flexDirection: 'row', gap: spacing.md },
+    image: { width: 72, height: 72, borderRadius: radius.sm, backgroundColor: colors.bg },
+    imageFallback: { alignItems: 'center', justifyContent: 'center' },
+    imageFallbackText: { fontSize: 28 },
+    cardText: { flex: 1, gap: 2 },
+    title: { fontSize: 16, fontWeight: '600', color: colors.text },
+    meta: { fontSize: 13, color: colors.textMuted },
+    separator: { height: spacing.md },
+    error: { color: colors.danger, fontSize: 14 },
+  });

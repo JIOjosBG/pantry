@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
-import { colors, spacing } from '@/components/theme';
+import { Colors, spacing } from '@/components/theme';
 import { Button, Card, Field, Screen } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { HouseholdError, createHousehold, joinHousehold } from '@/lib/household';
+import { useThemedStyles } from '@/lib/theme';
 
 export default function HouseholdScreen() {
+  const styles = useThemedStyles(makeStyles);
   const { user, signOut } = useAuth();
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState<'create' | 'join' | null>(null);
@@ -82,18 +84,19 @@ export default function HouseholdScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: spacing.lg,
-    gap: spacing.lg,
-    maxWidth: 520,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  heading: { fontSize: 24, fontWeight: '700', color: colors.text },
-  subtitle: { fontSize: 15, color: colors.textMuted },
-  card: { gap: spacing.md },
-  cardTitle: { fontSize: 17, fontWeight: '600', color: colors.text },
-  cardHint: { fontSize: 14, color: colors.textMuted },
-  error: { color: colors.danger, fontSize: 14 },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    content: {
+      padding: spacing.lg,
+      gap: spacing.lg,
+      maxWidth: 520,
+      width: '100%',
+      alignSelf: 'center',
+    },
+    heading: { fontSize: 24, fontWeight: '700', color: colors.text },
+    subtitle: { fontSize: 15, color: colors.textMuted },
+    card: { gap: spacing.md },
+    cardTitle: { fontSize: 17, fontWeight: '600', color: colors.text },
+    cardHint: { fontSize: 14, color: colors.textMuted },
+    error: { color: colors.danger, fontSize: 14 },
+  });

@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { colors, spacing } from '@/components/theme';
+import { Colors, spacing } from '@/components/theme';
 import { Button, Card, Screen } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { leaveHousehold, rotateInviteCode, subscribeMembers } from '@/lib/household';
 import { useHousehold } from '@/lib/store';
+import { useTheme, useThemedStyles } from '@/lib/theme';
 
 export default function SettingsScreen() {
+  const styles = useThemedStyles(makeStyles);
+  const { theme, followsSystem, toggleTheme } = useTheme();
   const { user, signOut } = useAuth();
   const { householdId, inviteCode, items, recipes, shopping } = useHousehold();
   const [members, setMembers] = useState<{ uid: string; email: string; displayName: string }[]>([]);
@@ -57,6 +60,20 @@ export default function SettingsScreen() {
         </Card>
 
         <Card style={styles.card}>
+          <Text style={styles.title}>Appearance</Text>
+          <Text style={styles.hint}>
+            {followsSystem
+              ? `Following your device — currently ${theme}.`
+              : `Using the ${theme} theme on this device.`}
+          </Text>
+          <Button
+            title={theme === 'dark' ? '☀️  Switch to light theme' : '🌙  Switch to dark theme'}
+            variant="secondary"
+            onPress={toggleTheme}
+          />
+        </Card>
+
+        <Card style={styles.card}>
           <Text style={styles.title}>This household</Text>
           <Text style={styles.hint}>
             {items.length} pantry items · {recipes.length} recipes · {shopping.length} on the
@@ -77,18 +94,19 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: spacing.lg,
-    gap: spacing.lg,
-    maxWidth: 520,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  card: { gap: spacing.sm },
-  title: { fontSize: 16, fontWeight: '700', color: colors.text },
-  code: { fontSize: 32, fontWeight: '700', letterSpacing: 6, color: colors.primary },
-  hint: { fontSize: 14, color: colors.textMuted },
-  member: { paddingVertical: spacing.xs },
-  memberName: { fontSize: 15, color: colors.text, fontWeight: '600' },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    content: {
+      padding: spacing.lg,
+      gap: spacing.lg,
+      maxWidth: 520,
+      width: '100%',
+      alignSelf: 'center',
+    },
+    card: { gap: spacing.sm },
+    title: { fontSize: 16, fontWeight: '700', color: colors.text },
+    code: { fontSize: 32, fontWeight: '700', letterSpacing: 6, color: colors.primary },
+    hint: { fontSize: 14, color: colors.textMuted },
+    member: { paddingVertical: spacing.xs },
+    memberName: { fontSize: 15, color: colors.text, fontWeight: '600' },
+  });

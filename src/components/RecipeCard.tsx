@@ -1,7 +1,8 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { expiryLabel } from '@/domain/expiry';
 import { RecipeMatch } from '@/domain/match';
-import { colors, radius, spacing } from './theme';
+import { useThemedStyles } from '@/lib/theme';
+import { Colors, radius, spacing } from './theme';
 import { Button } from './ui';
 
 /** The pantry item this recipe should be cooked around, if anything is expiring. */
@@ -21,6 +22,7 @@ export function RecipeCard({
   onPress: () => void;
   action?: { title: string; onPress: () => void; loading?: boolean };
 }) {
+  const styles = useThemedStyles(makeStyles);
   const { recipe, missing } = match;
   const urgency = urgencyLine(match);
 
@@ -61,22 +63,23 @@ export function RecipeCard({
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.md,
-    gap: spacing.md,
-  },
-  main: { flexDirection: 'row', gap: spacing.md },
-  image: { width: 72, height: 72, borderRadius: radius.sm, backgroundColor: colors.bg },
-  imageFallback: { alignItems: 'center', justifyContent: 'center' },
-  imageFallbackText: { fontSize: 28 },
-  text: { flex: 1, gap: 2 },
-  title: { fontSize: 16, fontWeight: '600', color: colors.text },
-  meta: { fontSize: 13, color: colors.textMuted },
-  urgency: { fontSize: 13, color: colors.urgent, fontWeight: '600' },
-  missing: { fontSize: 13, color: colors.danger },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.md,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: spacing.md,
+      gap: spacing.md,
+    },
+    main: { flexDirection: 'row', gap: spacing.md },
+    image: { width: 72, height: 72, borderRadius: radius.sm, backgroundColor: colors.bg },
+    imageFallback: { alignItems: 'center', justifyContent: 'center' },
+    imageFallbackText: { fontSize: 28 },
+    text: { flex: 1, gap: 2 },
+    title: { fontSize: 16, fontWeight: '600', color: colors.text },
+    meta: { fontSize: 13, color: colors.textMuted },
+    urgency: { fontSize: 13, color: colors.urgent, fontWeight: '600' },
+    missing: { fontSize: 13, color: colors.danger },
+  });

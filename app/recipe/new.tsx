@@ -1,17 +1,19 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { colors, spacing } from '@/components/theme';
+import { Colors, spacing } from '@/components/theme';
 import { Button, Card, Chips, Field, Screen } from '@/components/ui';
 import { saveRecipe } from '@/data/recipes';
 import { UNITS, Unit } from '@/domain/types';
 import { useHousehold } from '@/lib/store';
+import { useThemedStyles } from '@/lib/theme';
 
 type IngredientDraft = { name: string; qty: string; unit: Unit };
 
 const EMPTY_INGREDIENT: IngredientDraft = { name: '', qty: '1', unit: 'piece' };
 
 export default function NewRecipeScreen() {
+  const styles = useThemedStyles(makeStyles);
   const { householdId } = useHousehold();
   const router = useRouter();
   const [title, setTitle] = useState('');
@@ -135,27 +137,28 @@ export default function NewRecipeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: spacing.lg,
-    gap: spacing.lg,
-    maxWidth: 640,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  card: { gap: spacing.md },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: colors.text },
-  servings: { width: 120 },
-  ingredient: {
-    gap: spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingTop: spacing.md,
-  },
-  ingredientTop: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start' },
-  grow: { flex: 1 },
-  qtyField: { width: 90 },
-  steps: { minHeight: 120 },
-  remove: { color: colors.danger, fontSize: 14, fontWeight: '600' },
-  error: { color: colors.danger, fontSize: 14 },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    content: {
+      padding: spacing.lg,
+      gap: spacing.lg,
+      maxWidth: 640,
+      width: '100%',
+      alignSelf: 'center',
+    },
+    card: { gap: spacing.md },
+    sectionTitle: { fontSize: 16, fontWeight: '700', color: colors.text },
+    servings: { width: 120 },
+    ingredient: {
+      gap: spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      paddingTop: spacing.md,
+    },
+    ingredientTop: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start' },
+    grow: { flex: 1 },
+    qtyField: { width: 90 },
+    steps: { minHeight: 120 },
+    remove: { color: colors.danger, fontSize: 14, fontWeight: '600' },
+    error: { color: colors.danger, fontSize: 14 },
+  });

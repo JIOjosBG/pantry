@@ -2,7 +2,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useEffect, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { parseISODate, toISODate } from '@/domain/expiry';
-import { colors, radius, spacing } from './theme';
+import { useTheme, useThemedStyles } from '@/lib/theme';
+import { Colors, radius, spacing } from './theme';
 
 /**
  * Date entry that works on both targets: a plain typed field on web (where the
@@ -17,6 +18,8 @@ export function DateField({
   value: string;
   onChange: (iso: string) => void;
 }) {
+  const styles = useThemedStyles(makeStyles);
+  const { colors } = useTheme();
   const [showPicker, setShowPicker] = useState(false);
   const [draft, setDraft] = useState(value);
 
@@ -70,20 +73,21 @@ export function DateField({
   );
 }
 
-const styles = StyleSheet.create({
-  field: { gap: spacing.xs },
-  label: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    borderRadius: radius.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    fontSize: 16,
-    color: colors.text,
-    justifyContent: 'center',
-    minHeight: 48,
-  },
-  value: { fontSize: 16, color: colors.text },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    field: { gap: spacing.xs },
+    label: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
+    input: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.md,
+      fontSize: 16,
+      color: colors.text,
+      justifyContent: 'center',
+      minHeight: 48,
+    },
+    value: { fontSize: 16, color: colors.text },
+  });

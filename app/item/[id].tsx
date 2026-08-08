@@ -2,13 +2,15 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { DateField } from '@/components/DateField';
-import { colors, spacing } from '@/components/theme';
+import { Colors, spacing } from '@/components/theme';
 import { Button, Card, Chips, EmptyState, Field, Screen } from '@/components/ui';
 import { removeItem, updateItem } from '@/data/items';
 import { CATEGORIES, Category, UNITS, Unit } from '@/domain/types';
 import { useHousehold } from '@/lib/store';
+import { useThemedStyles } from '@/lib/theme';
 
 export default function EditItemScreen() {
+  const styles = useThemedStyles(makeStyles);
   const { id } = useLocalSearchParams<{ id: string }>();
   const { householdId, items } = useHousehold();
   const router = useRouter();
@@ -88,17 +90,18 @@ export default function EditItemScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: spacing.lg,
-    gap: spacing.lg,
-    maxWidth: 520,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  card: { gap: spacing.md },
-  row: { flexDirection: 'row', gap: spacing.md },
-  qtyField: { width: 120 },
-  label: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
-  error: { color: colors.danger, fontSize: 14 },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    content: {
+      padding: spacing.lg,
+      gap: spacing.lg,
+      maxWidth: 520,
+      width: '100%',
+      alignSelf: 'center',
+    },
+    card: { gap: spacing.md },
+    row: { flexDirection: 'row', gap: spacing.md },
+    qtyField: { width: 120 },
+    label: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
+    error: { color: colors.danger, fontSize: 14 },
+  });

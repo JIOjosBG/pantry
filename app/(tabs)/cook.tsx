@@ -2,12 +2,13 @@ import { Link, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { SectionList, StyleSheet, Text, View } from 'react-native';
 import { RecipeCard } from '@/components/RecipeCard';
-import { colors, spacing } from '@/components/theme';
+import { Colors, spacing } from '@/components/theme';
 import { EmptyState, Screen } from '@/components/ui';
 import { addMissingIngredients } from '@/data/shopping';
 import { CookTier, RankedRecipe, rankRecipes } from '@/domain/match';
 import { RecipeIngredient } from '@/domain/types';
 import { useHousehold } from '@/lib/store';
+import { useThemedStyles } from '@/lib/theme';
 
 const SECTIONS: { tier: CookTier; title: string; hint: string }[] = [
   {
@@ -28,6 +29,7 @@ const SECTIONS: { tier: CookTier; title: string; hint: string }[] = [
 ];
 
 export default function CookScreen() {
+  const styles = useThemedStyles(makeStyles);
   const { householdId, items, recipes, shopping } = useHousehold();
   const router = useRouter();
   const [busyRecipeId, setBusyRecipeId] = useState<string | null>(null);
@@ -117,14 +119,15 @@ export default function CookScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  list: { padding: spacing.lg, maxWidth: 640, width: '100%', alignSelf: 'center' },
-  header: { gap: spacing.sm, marginBottom: spacing.md },
-  hint: { fontSize: 14, color: colors.textMuted },
-  note: { fontSize: 14, color: colors.primary, fontWeight: '600' },
-  link: { fontSize: 14, color: colors.primary, fontWeight: '600' },
-  sectionHeader: { gap: 2, marginTop: spacing.lg, marginBottom: spacing.md },
-  sectionTitle: { fontSize: 17, fontWeight: '700', color: colors.text },
-  sectionHint: { fontSize: 13, color: colors.textMuted },
-  separator: { height: spacing.md },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    list: { padding: spacing.lg, maxWidth: 640, width: '100%', alignSelf: 'center' },
+    header: { gap: spacing.sm, marginBottom: spacing.md },
+    hint: { fontSize: 14, color: colors.textMuted },
+    note: { fontSize: 14, color: colors.primary, fontWeight: '600' },
+    link: { fontSize: 14, color: colors.primary, fontWeight: '600' },
+    sectionHeader: { gap: 2, marginTop: spacing.lg, marginBottom: spacing.md },
+    sectionTitle: { fontSize: 17, fontWeight: '700', color: colors.text },
+    sectionHint: { fontSize: 13, color: colors.textMuted },
+    separator: { height: spacing.md },
+  });

@@ -6,6 +6,7 @@ import { ErrorBanner, Loading, Screen } from "@/components/ui";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { isFirebaseConfigured, missingFirebaseConfig } from "@/lib/firebase";
 import { HouseholdProvider, useHousehold } from "@/lib/store";
+import { ThemeProvider, useTheme } from "@/lib/theme";
 
 /** Send the user to sign-in, household setup or the app, depending on state. */
 function RouteGuard({ children }: { children: React.ReactNode }) {
@@ -54,25 +55,44 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
 }
 
 export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <SafeAreaProvider>
+        <ThemedApp />
+      </SafeAreaProvider>
+    </ThemeProvider>
+  );
+}
+
+/** Inside the provider, so the chrome (status bar, headers) follows the theme. */
+function ThemedApp() {
+  const { theme, colors } = useTheme();
+
   if (!isFirebaseConfigured) {
     return (
-      <SafeAreaProvider>
-        <Screen>
-          <ErrorBanner
-            message={`Firebase isn't configured yet. Add these to .env and restart Expo: ${missingFirebaseConfig.join(", ")}.`}
-          />
-        </Screen>
-      </SafeAreaProvider>
+      <Screen>
+        <ErrorBanner
+          message={`Firebase isn't configured yet. Add these to .env and restart Expo: ${missingFirebaseConfig.join(", ")}.`}
+        />
+      </Screen>
     );
   }
 
   return (
-    <SafeAreaProvider>
-      <StatusBar style="dark" />
+    <>
+      <StatusBar style={theme === "dark" ? "light" : "dark"} />
       <AuthProvider>
         <HouseholdProvider>
           <RouteGuard>
-            <Stack screenOptions={{ headerShown: false }}>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                headerStyle: { backgroundColor: colors.surface },
+                headerTitleStyle: { color: colors.text },
+                headerTintColor: colors.primary,
+                contentStyle: { backgroundColor: colors.bg },
+              }}
+            >
               <Stack.Screen name="(tabs)" />
               <Stack.Screen name="sign-in" />
               <Stack.Screen name="household" />
@@ -112,6 +132,6 @@ export default function RootLayout() {
           </RouteGuard>
         </HouseholdProvider>
       </AuthProvider>
-    </SafeAreaProvider>
+    </>
   );
 }

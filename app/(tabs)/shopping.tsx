@@ -2,13 +2,15 @@ import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { QtyStepper } from '@/components/ItemRow';
-import { categoryEmoji, colors, spacing } from '@/components/theme';
+import { categoryEmoji, Colors, spacing } from '@/components/theme';
 import { Button, Card, Chips, EmptyState, Field, Screen } from '@/components/ui';
 import { addShoppingEntry, adjustShoppingQty, removeShoppingEntry } from '@/data/shopping';
 import { ShoppingEntry, UNITS, Unit } from '@/domain/types';
 import { useHousehold } from '@/lib/store';
+import { useThemedStyles } from '@/lib/theme';
 
 export default function ShoppingScreen() {
+  const styles = useThemedStyles(makeStyles);
   const { householdId, shopping } = useHousehold();
   const router = useRouter();
   const [name, setName] = useState('');
@@ -18,7 +20,10 @@ export default function ShoppingScreen() {
 
   // Entries arrive sorted by category, so a single pass produces the headings.
   const rows = useMemo(() => {
-    const out: ({ kind: 'header'; key: string; title: string } | { kind: 'entry'; key: string; entry: ShoppingEntry })[] = [];
+    const out: (
+      | { kind: 'header'; key: string; title: string }
+      | { kind: 'entry'; key: string; entry: ShoppingEntry }
+    )[] = [];
     let lastCategory: string | null = null;
     for (const entry of shopping) {
       if (entry.category !== lastCategory) {
@@ -125,45 +130,46 @@ export default function ShoppingScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  list: {
-    padding: spacing.lg,
-    paddingBottom: spacing.xl * 3,
-    maxWidth: 640,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  form: { gap: spacing.md, marginBottom: spacing.lg },
-  formRow: { flexDirection: 'row', gap: spacing.md },
-  qtyField: { width: 110 },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.textMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginTop: spacing.md,
-    marginBottom: spacing.xs,
-  },
-  row: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 10,
-    padding: spacing.md,
-    gap: spacing.sm,
-  },
-  rowActions: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  rowButtons: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  bought: { paddingVertical: spacing.xs, paddingHorizontal: spacing.md },
-  name: { fontSize: 16, fontWeight: '600', color: colors.text },
-  remove: { fontSize: 18, color: colors.danger, paddingHorizontal: spacing.sm },
-  separator: { height: spacing.sm },
-  error: { color: colors.danger, fontSize: 14 },
-  footer: {
-    padding: spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.surface,
-  },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    list: {
+      padding: spacing.lg,
+      paddingBottom: spacing.xl * 3,
+      maxWidth: 640,
+      width: '100%',
+      alignSelf: 'center',
+    },
+    form: { gap: spacing.md, marginBottom: spacing.lg },
+    formRow: { flexDirection: 'row', gap: spacing.md },
+    qtyField: { width: 110 },
+    sectionTitle: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.textMuted,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      marginTop: spacing.md,
+      marginBottom: spacing.xs,
+    },
+    row: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 10,
+      padding: spacing.md,
+      gap: spacing.sm,
+    },
+    rowActions: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    rowButtons: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+    bought: { paddingVertical: spacing.xs, paddingHorizontal: spacing.md },
+    name: { fontSize: 16, fontWeight: '600', color: colors.text },
+    remove: { fontSize: 18, color: colors.danger, paddingHorizontal: spacing.sm },
+    separator: { height: spacing.sm },
+    error: { color: colors.danger, fontSize: 14 },
+    footer: {
+      padding: spacing.lg,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      backgroundColor: colors.surface,
+    },
+  });

@@ -1,9 +1,11 @@
 import { StyleSheet, Text } from 'react-native';
-import { colors, spacing } from '@/components/theme';
+import { Colors, spacing } from '@/components/theme';
 import { Button, Card, Screen } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
+import { useThemedStyles } from '@/lib/theme';
 
 export default function SignInScreen() {
+  const styles = useThemedStyles(makeStyles);
   const { signIn, signingIn, error } = useAuth();
 
   return (
@@ -24,16 +26,17 @@ export default function SignInScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: { alignItems: 'center', justifyContent: 'center', padding: spacing.lg },
-  card: { width: '100%', maxWidth: 420, gap: spacing.md, alignItems: 'stretch' },
-  emoji: { fontSize: 48, textAlign: 'center' },
-  title: { fontSize: 28, fontWeight: '700', color: colors.text, textAlign: 'center' },
-  subtitle: {
-    fontSize: 15,
-    color: colors.textMuted,
-    textAlign: 'center',
-    marginBottom: spacing.sm,
-  },
-  error: { color: colors.danger, fontSize: 14, textAlign: 'center' },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    screen: { alignItems: 'center', justifyContent: 'center', padding: spacing.lg },
+    card: { width: '100%', maxWidth: 420, gap: spacing.md, alignItems: 'stretch' },
+    emoji: { fontSize: 48, textAlign: 'center' },
+    title: { fontSize: 28, fontWeight: '700', color: colors.text, textAlign: 'center' },
+    subtitle: {
+      fontSize: 15,
+      color: colors.textMuted,
+      textAlign: 'center',
+      marginBottom: spacing.sm,
+    },
+    error: { color: colors.danger, fontSize: 14, textAlign: 'center' },
+  });

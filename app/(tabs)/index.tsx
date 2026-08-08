@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { Alert, Platform, ScrollView, SectionList, StyleSheet, Text, View } from 'react-native';
 import { DateField } from '@/components/DateField';
 import { ItemRow } from '@/components/ItemRow';
-import { colors, spacing } from '@/components/theme';
+import { Colors, spacing } from '@/components/theme';
 import { Button, Card, Chips, EmptyState, ErrorBanner, Field, Screen } from '@/components/ui';
 import { addItem, adjustQty, removeItem } from '@/data/items';
 import { defaultExpiry, expiryStatus } from '@/domain/expiry';
@@ -11,6 +11,7 @@ import { guessCategory } from '@/domain/normalize';
 import { CATEGORIES, Category, PantryItem, UNITS, Unit } from '@/domain/types';
 import { useAuth } from '@/lib/auth';
 import { useHousehold } from '@/lib/store';
+import { useThemedStyles } from '@/lib/theme';
 
 const SECTION_TITLES: Record<string, string> = {
   expired: 'Expired',
@@ -31,6 +32,7 @@ function groupByStatus(items: PantryItem[]) {
 }
 
 export default function PantryScreen() {
+  const styles = useThemedStyles(makeStyles);
   const { user } = useAuth();
   const { householdId, items, error } = useHousehold();
   const router = useRouter();
@@ -121,6 +123,7 @@ function AddItemForm({
     expiry: string;
   }) => Promise<void>;
 }) {
+  const styles = useThemedStyles(makeStyles);
   const [name, setName] = useState('');
   const [qty, setQty] = useState('1');
   const [unit, setUnit] = useState<Unit>('piece');
@@ -188,26 +191,33 @@ function AddItemForm({
   );
 }
 
-const styles = StyleSheet.create({
-  list: { padding: spacing.lg, gap: spacing.sm, maxWidth: 640, width: '100%', alignSelf: 'center' },
-  header: { gap: spacing.md, marginBottom: spacing.sm },
-  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  count: { fontSize: 14, color: colors.textMuted },
-  link: { fontSize: 14, color: colors.primary, fontWeight: '600' },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.textMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginTop: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  separator: { height: spacing.sm },
-  form: { gap: spacing.md },
-  formRow: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-end' },
-  qtyField: { width: 110 },
-  unitScroll: { flex: 1 },
-  formLabel: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
-  error: { color: colors.danger, fontSize: 14 },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    list: {
+      padding: spacing.lg,
+      gap: spacing.sm,
+      maxWidth: 640,
+      width: '100%',
+      alignSelf: 'center',
+    },
+    header: { gap: spacing.md, marginBottom: spacing.sm },
+    headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    count: { fontSize: 14, color: colors.textMuted },
+    link: { fontSize: 14, color: colors.primary, fontWeight: '600' },
+    sectionTitle: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.textMuted,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      marginTop: spacing.md,
+      marginBottom: spacing.sm,
+    },
+    separator: { height: spacing.sm },
+    form: { gap: spacing.md },
+    formRow: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-end' },
+    qtyField: { width: 110 },
+    unitScroll: { flex: 1 },
+    formLabel: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
+    error: { color: colors.danger, fontSize: 14 },
+  });

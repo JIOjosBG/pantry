@@ -8,13 +8,16 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { colors, radius, spacing } from './theme';
+import { useTheme, useThemedStyles } from '@/lib/theme';
+import { Colors, radius, spacing } from './theme';
 
 export function Screen({ children, style }: { children: React.ReactNode; style?: ViewStyle }) {
+  const styles = useThemedStyles(makeStyles);
   return <View style={[styles.screen, style]}>{children}</View>;
 }
 
 export function Card({ children, style }: { children: React.ReactNode; style?: ViewStyle }) {
+  const styles = useThemedStyles(makeStyles);
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
@@ -33,6 +36,8 @@ export function Button({
   loading?: boolean;
   style?: ViewStyle;
 }) {
+  const styles = useThemedStyles(makeStyles);
+  const { colors } = useTheme();
   const isDisabled = disabled || loading;
   return (
     <Pressable
@@ -68,6 +73,8 @@ export function Field({
   style,
   ...props
 }: TextInputProps & { label: string; style?: ViewStyle }) {
+  const styles = useThemedStyles(makeStyles);
+  const { colors } = useTheme();
   return (
     <View style={[styles.field, style]}>
       <Text style={styles.fieldLabel}>{label}</Text>
@@ -92,6 +99,7 @@ export function Chips<T extends string>({
   onChange: (next: T) => void;
   labelFor?: (option: T) => string;
 }) {
+  const styles = useThemedStyles(makeStyles);
   return (
     <View style={styles.chips}>
       {options.map((option) => {
@@ -115,6 +123,7 @@ export function Chips<T extends string>({
 }
 
 export function EmptyState({ title, hint }: { title: string; hint?: string }) {
+  const styles = useThemedStyles(makeStyles);
   return (
     <View style={styles.empty}>
       <Text style={styles.emptyTitle}>{title}</Text>
@@ -124,6 +133,7 @@ export function EmptyState({ title, hint }: { title: string; hint?: string }) {
 }
 
 export function ErrorBanner({ message }: { message: string }) {
+  const styles = useThemedStyles(makeStyles);
   return (
     <View style={styles.errorBanner}>
       <Text style={styles.errorText}>{message}</Text>
@@ -132,6 +142,8 @@ export function ErrorBanner({ message }: { message: string }) {
 }
 
 export function Loading({ label }: { label?: string }) {
+  const styles = useThemedStyles(makeStyles);
+  const { colors } = useTheme();
   return (
     <View style={styles.loading}>
       <ActivityIndicator color={colors.primary} />
@@ -140,69 +152,70 @@ export function Loading({ label }: { label?: string }) {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.bg },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.lg,
-  },
-  button: {
-    backgroundColor: colors.primary,
-    borderRadius: radius.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 44,
-  },
-  buttonSecondary: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  buttonDanger: { backgroundColor: colors.danger },
-  buttonPressed: { opacity: 0.85 },
-  buttonDisabled: { opacity: 0.5 },
-  buttonText: { color: colors.primaryText, fontWeight: '600', fontSize: 15 },
-  buttonTextSecondary: { color: colors.text },
-  field: { gap: spacing.xs },
-  fieldLabel: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    borderRadius: radius.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    fontSize: 16,
-    color: colors.text,
-  },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  chip: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-  },
-  chipSelected: { backgroundColor: colors.primary, borderColor: colors.primary },
-  chipText: { color: colors.text, fontSize: 14 },
-  chipTextSelected: { color: colors.primaryText, fontWeight: '600' },
-  empty: { padding: spacing.xl, alignItems: 'center', gap: spacing.sm },
-  emptyTitle: { fontSize: 16, fontWeight: '600', color: colors.text, textAlign: 'center' },
-  emptyHint: { fontSize: 14, color: colors.textMuted, textAlign: 'center' },
-  errorBanner: {
-    backgroundColor: '#fdecea',
-    borderColor: colors.danger,
-    borderWidth: 1,
-    borderRadius: radius.sm,
-    padding: spacing.md,
-    margin: spacing.lg,
-  },
-  errorText: { color: colors.danger, fontSize: 14 },
-  loading: { padding: spacing.xl, alignItems: 'center', gap: spacing.md },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    screen: { flex: 1, backgroundColor: colors.bg },
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.md,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: spacing.lg,
+    },
+    button: {
+      backgroundColor: colors.primary,
+      borderRadius: radius.md,
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.lg,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 44,
+    },
+    buttonSecondary: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    buttonDanger: { backgroundColor: colors.danger },
+    buttonPressed: { opacity: 0.85 },
+    buttonDisabled: { opacity: 0.5 },
+    buttonText: { color: colors.primaryText, fontWeight: '600', fontSize: 15 },
+    buttonTextSecondary: { color: colors.text },
+    field: { gap: spacing.xs },
+    fieldLabel: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
+    input: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      borderRadius: radius.sm,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.md,
+      fontSize: 16,
+      color: colors.text,
+    },
+    chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+    chip: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+    },
+    chipSelected: { backgroundColor: colors.primary, borderColor: colors.primary },
+    chipText: { color: colors.text, fontSize: 14 },
+    chipTextSelected: { color: colors.primaryText, fontWeight: '600' },
+    empty: { padding: spacing.xl, alignItems: 'center', gap: spacing.sm },
+    emptyTitle: { fontSize: 16, fontWeight: '600', color: colors.text, textAlign: 'center' },
+    emptyHint: { fontSize: 14, color: colors.textMuted, textAlign: 'center' },
+    errorBanner: {
+      backgroundColor: colors.dangerBg,
+      borderColor: colors.danger,
+      borderWidth: 1,
+      borderRadius: radius.sm,
+      padding: spacing.md,
+      margin: spacing.lg,
+    },
+    errorText: { color: colors.danger, fontSize: 14 },
+    loading: { padding: spacing.xl, alignItems: 'center', gap: spacing.md },
+  });

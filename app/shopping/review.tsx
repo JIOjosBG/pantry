@@ -2,12 +2,13 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { DateField } from '@/components/DateField';
-import { categoryEmoji, colors, spacing } from '@/components/theme';
+import { categoryEmoji, Colors, spacing } from '@/components/theme';
 import { Button, Card, EmptyState, Screen } from '@/components/ui';
 import { buyAll } from '@/data/shopping';
 import { PurchasedItem, toPurchaseDrafts } from '@/domain/purchase';
 import { useAuth } from '@/lib/auth';
 import { useHousehold } from '@/lib/store';
+import { useThemedStyles } from '@/lib/theme';
 
 /**
  * The confirmation step behind "Bought all" and a row's "Bought": each entry
@@ -18,6 +19,7 @@ import { useHousehold } from '@/lib/store';
  * list is reviewed.
  */
 export default function ReviewPurchaseScreen() {
+  const styles = useThemedStyles(makeStyles);
   const { user } = useAuth();
   const { householdId, shopping } = useHousehold();
   const { entryId } = useLocalSearchParams<{ entryId?: string }>();
@@ -111,18 +113,19 @@ export default function ReviewPurchaseScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    padding: spacing.lg,
-    gap: spacing.md,
-    maxWidth: 560,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  hint: { fontSize: 14, color: colors.textMuted },
-  card: { gap: spacing.md },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  name: { fontSize: 16, fontWeight: '600', color: colors.text, flex: 1 },
-  qty: { fontSize: 14, color: colors.textMuted },
-  error: { color: colors.danger, fontSize: 14 },
-});
+const makeStyles = (colors: Colors) =>
+  StyleSheet.create({
+    content: {
+      padding: spacing.lg,
+      gap: spacing.md,
+      maxWidth: 560,
+      width: '100%',
+      alignSelf: 'center',
+    },
+    hint: { fontSize: 14, color: colors.textMuted },
+    card: { gap: spacing.md },
+    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+    name: { fontSize: 16, fontWeight: '600', color: colors.text, flex: 1 },
+    qty: { fontSize: 14, color: colors.textMuted },
+    error: { color: colors.danger, fontSize: 14 },
+  });
