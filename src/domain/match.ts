@@ -71,8 +71,19 @@ function matchIngredient(
   };
 }
 
+/**
+ * Match a bare ingredient list against the pantry, for recipes that aren't
+ * saved yet — a Discover result has nothing to hang a `Recipe` off.
+ */
+export function matchIngredients(
+  ingredients: RecipeIngredient[],
+  pantry: PantryItem[],
+): IngredientMatch[] {
+  return ingredients.map((ingredient) => matchIngredient(ingredient, pantry));
+}
+
 export function matchRecipe(recipe: Recipe, pantry: PantryItem[], now = new Date()): RecipeMatch {
-  const matches = recipe.ingredients.map((ingredient) => matchIngredient(ingredient, pantry));
+  const matches = matchIngredients(recipe.ingredients, pantry);
   const missing = matches.filter((m) => !m.satisfied).map((m) => m.ingredient);
 
   const usedItems = matches

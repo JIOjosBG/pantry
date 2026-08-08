@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { DiscoverRecipeModal } from '@/components/DiscoverRecipeModal';
 import { Colors, radius, spacing } from '@/components/theme';
 import { Button, Card, EmptyState, Field, Loading, Screen } from '@/components/ui';
 import { importedSpoonacularIds, saveRecipe } from '@/data/recipes';
+import { addShoppingEntry } from '@/data/shopping';
 import {
   DiscoverRecipe,
   SpoonacularError,
@@ -15,13 +17,14 @@ import { useThemedStyles } from '@/lib/theme';
 
 export default function DiscoverScreen() {
   const styles = useThemedStyles(makeStyles);
-  const { householdId, items, recipes } = useHousehold();
+  const { householdId, items, recipes, shopping } = useHousehold();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<DiscoverRecipe[]>([]);
   const [searching, setSearching] = useState(false);
   const [savingId, setSavingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
+  const [openRecipe, setOpenRecipe] = useState<DiscoverRecipe | null>(null);
 
   const alreadyImported = importedSpoonacularIds(recipes);
 
@@ -105,7 +108,12 @@ export default function DiscoverScreen() {
           const imported = alreadyImported.has(item.spoonacularId);
           return (
             <View style={styles.card}>
-              <View style={styles.cardMain}>
+              <Pressable
+                style={styles.cardMain}
+                accessibilityRole="button"
+                accessibilityLabel={`Open ${item.title}`}
+                onPress={() => setOpenRecipe(item)}
+              >
                 {item.image ? (
                   <Image source={{ uri: item.image }} style={styles.image} resizeMode="cover" />
                 ) : (
@@ -128,7 +136,7 @@ export default function DiscoverScreen() {
                     </Text>
                   ) : null}
                 </View>
-              </View>
+              </Pressable>
               <Button
                 title={imported ? 'Already in my recipes' : 'Add to my recipes'}
                 variant="secondary"
@@ -151,6 +159,36 @@ export default function DiscoverScreen() {
               hint="Search by name, or build a list around what's already in your fridge."
             />
           )
+        }
+      />
+
+      <DiscoverRecipeModal
+        recipe={openRecipe}
+        items={items}
+        shopping={shopping}
+        onAddToCart={async (ingredient) => {
+          if (!householdId) return;
+          await addShoppingEntry(householdId, {
+            name: ingredient.name,
+            qty: ingredient.qty,
+            unit: ingredient.unit,
+          });
+        }}
+        onClose={() => setOpenRecipe(null)}
+        footer={
+          openRecipe ? (
+            <Button
+              title={
+                alreadyImported.has(openRecipe.spoonacularId)
+                  ? 'Already in my recipes'
+                  : 'Add to my recipes'
+              }
+              variant="secondary"
+              disabled={alreadyImported.has(openRecipe.spoonacularId)}
+              loading={savingId === openRecipe.spoonacularId}
+              onPress={() => void importRecipe(openRecipe)}
+            />
+          ) : null
         }
       />
     </Screen>
